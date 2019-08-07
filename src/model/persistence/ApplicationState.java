@@ -1,9 +1,7 @@
 package model.persistence;
 
-import model.ShapeColor;
-import model.ShapeShadingType;
-import model.ShapeType;
-import model.StartAndEndPointMode;
+import controller.Point;
+import model.*;
 import model.dialogs.DialogProvider;
 import model.interfaces.IApplicationState;
 import model.interfaces.IDialogProvider;
@@ -15,7 +13,8 @@ public class ApplicationState implements IApplicationState, Serializable {
     private static final long serialVersionUID = -5545483996576839008L;
     private final IUiModule uiModule;
     private final IDialogProvider dialogProvider;
-
+    private Point startPoint;
+    private Point endPoint;
     private ShapeType activeShapeType;
     private ShapeColor activePrimaryColor;
     private ShapeColor activeSecondaryColor;
@@ -26,6 +25,16 @@ public class ApplicationState implements IApplicationState, Serializable {
         this.uiModule = uiModule;
         this.dialogProvider = new DialogProvider(this);
         setDefaults();
+    }
+
+    @Override
+    public void setStartPoint(Point startPoint) {
+        this.startPoint = startPoint;
+    }
+
+    @Override
+    public void setEndPoint(Point endPoint) {
+        this.endPoint = endPoint;
     }
 
     @Override
@@ -51,6 +60,27 @@ public class ApplicationState implements IApplicationState, Serializable {
     @Override
     public void setActiveStartAndEndPointMode() {
         activeStartAndEndPointMode = uiModule.getDialogResponse(dialogProvider.getChooseStartAndEndPointModeDialog());
+    }
+    
+    public Point getStartPoint() {
+    	return startPoint;
+    }
+    
+    public Point getEndPoint() {
+    	return endPoint;
+    }
+
+    @Override
+    public ShapeOptions getCurrentState() {
+        ShapeOptions shapeOptions = new ShapeOptions();
+        shapeOptions.setPrimaryShapeColor(activePrimaryColor);
+        shapeOptions.setSecondaryShapeColor(activeSecondaryColor);
+        shapeOptions.setShadingType(activeShapeShadingType);
+        shapeOptions.setShapeType(activeShapeType);
+        shapeOptions.setEndPoint(endPoint);
+        shapeOptions.setStartPoint(startPoint);
+
+        return shapeOptions;
     }
 
     @Override
